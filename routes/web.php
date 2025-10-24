@@ -13,25 +13,33 @@ use Illuminate\Support\Facades\Auth;
 //});
 
 Route::prefix('menu')->group(function(){
-    Route::get('/', [menuViewController::class, 'index'])->name('menu-view.index');
-    Route::get('/{id}',[menuViewController::class, 'show'])->name('menu-view.show');
+    Route::get('/', [menuViewController::class, 'index'])->name('menu');
+    Route::get('/{id}',[menuViewController::class, 'show'])->name('menu.show');
 }); 
 
 Route::middleware(['web'])->group(function () {
     Route::get('/csrf-token', function () {
         return response()->json(['csrf_token' => csrf_token()]);
     });
-    Route::post('/login', [LoginController::class, 'login']);
-    Route::post('/logout', [LoginController::class, 'logout']);
+
+    // Show login form
+    Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+
+    // Authentication actions
+    Route::post('/login', [LoginController::class, 'login'])->name('login.attempt');
+    Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+    // Also accept GET for logout links (some templates use anchor tags).
+    // Note: POST with CSRF is recommended; GET is provided for convenience.
+    Route::get('/logout', [LoginController::class, 'logout']);
 });
 
 
 
-Route::prefix('admin')->group(function () {
+Route::prefix('admin')->middleware(['web', 'auth'])->group(function () {
 
     Route::get('/', function () { return 'panel de administracion';});
 
-        Route::prefix('productos')->group(function(){
+    Route::prefix('productos')->group(function(){
 
             Route::get('/', [AdminProductosController::class, 'index'])->name('admin-view.index');
 
@@ -41,7 +49,6 @@ Route::prefix('admin')->group(function () {
 
             Route::post('/create', [AdminProductosController::class, 'store'])->name('admin.store');
 
-            //Route::get('/edit/{id}', [AdminProductosController::class, 'edit'])->name('admin-edit-view.edit');
             
             Route::put('/edit/{id}', [AdminProductosController::class, 'update'])->name('admin.update');
 
@@ -49,11 +56,15 @@ Route::prefix('admin')->group(function () {
 
     });
 
-        Route::prefix('pedidos')->group(function(){
+    Route::prefix('pedidos')->group(function(){
 
         Route::get('/', [AdminPedidosController::class, 'index'])->name('admin-pedidos.index');
 
-        
-        });
-    
-}); 
+    });
+
+    Route::prefix('pedidos')->group(function(){
+
+        Route::get('/', [AdminPedidosController::class, 'index'])->name('admin-pedidos.index');
+
+    });
+});

@@ -11,12 +11,16 @@ class menuViewController extends Controller
     public function index()
     {
         $productos = Product::with('pedidos')->orderBy('id', 'asc')->get();
-        return ProductoResource::collection($productos); // Devuelve la colección de productos como JSON para que el front pueda consumirlo
+
+        // Render blade view for web (menu-view.blade.php)
+        return view('menu-view', ['productos' => $productos]);
     }
 
     public function show($id){
         $producto = Product::find($id);
-        return new ProductoResource($producto);
+
+        // Reuse the menu view by passing a collection with a single product
+        return view('menu-view', ['productos' => collect([$producto])]);
     }
 
 }

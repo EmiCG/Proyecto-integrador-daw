@@ -9,11 +9,10 @@ use Illuminate\Http\Request;
 
 class AdminPedidosController extends Controller
 {
-    
     public function index(){
         $pedidos = Order::with('productos')->orderBy('created_at', 'desc')->get();
 
-        return PedidoResource::collection($pedidos); 
+        return view('admin-pedidos', ['pedidos' => $pedidos]);
     }
 
 }

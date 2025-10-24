@@ -24,7 +24,7 @@ class LoginController extends Controller
                 ], 200);
             }
 
-            return redirect()->intended(route('admin-view.index'));
+            return redirect()->intended(route('menu'));
         }
 
         if ($request->wantsJson()) {
@@ -48,6 +48,11 @@ class LoginController extends Controller
             return response()->json(['message' => 'Logout successful'], 200);
         }
 
-        return redirect('/login');
+        return redirect()->route('login');
+    }
+
+    public function showLoginForm()
+    {
+        return view('login');
     }
 }
