@@ -4,17 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
-use App\Http\Resources\ProductoResource; // Asegúrate de crear este recurso
+use App\Http\Resources\ProductoResource; 
 
 class AdminProductosController extends Controller
 {
     public function index()
     {
         $productos = Product::with('pedidos')->orderBy('id', 'asc')->get();
-        return ProductoResource::collection($productos); // Devuelve la colección de productos como JSON para que el front pueda consumirlo
+        return ProductoResource::collection($productos); 
     }
 
-    public function show($id) // Para obtener un producto específico
+    public function show($id) 
     {
         $producto = Product::find($id);
         return new ProductoResource($producto);
@@ -37,7 +37,7 @@ class AdminProductosController extends Controller
         $producto = Product::find($id);
 
         if (!$producto) {
-            return response()->json(['message' => 'Producto no encontrado'], 404); // Código 404 Not Found
+            return response()->json(['message' => 'Producto no encontrado'], 404); 
         }
 
         $request->validate([
@@ -46,16 +46,15 @@ class AdminProductosController extends Controller
             'precio' => 'required|numeric|min:0',
         ]);
 
-        $producto->update($request->json()->all()); // Actualiza con los datos JSON
-        return new ProductoResource($producto); // Devuelve el producto actualizado
+        $producto->update($request->json()->all()); 
+        return new ProductoResource($producto);
     }
 
     public function destroy($id)
     {
         $producto = Product::find($id);
         $producto->delete();
-        return response()->json(['message' => 'Producto eliminado correctamente'], 204); // Código 204 No Content
+        return response()->json(['message' => 'Producto eliminado correctamente'], 204); 
     }
 
-    // La función 'create' ya no es necesaria para una API, ya que Flutter manejará la UI del formulario
 }

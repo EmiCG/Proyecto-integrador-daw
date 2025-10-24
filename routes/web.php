@@ -18,7 +18,6 @@ Route::prefix('menu')->group(function(){
 }); 
 
 Route::middleware(['web'])->group(function () {
-    // Helper route to return CSRF token value (useful for SPAs / Postman)
     Route::get('/csrf-token', function () {
         return response()->json(['csrf_token' => csrf_token()]);
     });
