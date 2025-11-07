@@ -14,6 +14,14 @@ class AdminProductosController extends Controller
         return view('admin-view', ['productos' => $productos]);
     }
 
+    /**
+     * Show create product form.
+     */
+    public function create()
+    {
+        return view('admin-create-product-view');
+    }
+
     public function show($id)
     {
         $producto = Product::find($id);

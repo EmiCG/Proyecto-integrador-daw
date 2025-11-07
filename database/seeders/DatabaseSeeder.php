@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\Product;
 use App\Models\User;
 use App\Models\Order;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -18,13 +17,16 @@ class DatabaseSeeder extends Seeder
      
        Product::factory(10)->create();
 
-        User::factory(5)->create();
+        //User::factory(5)->create();
 
         User::factory()->create([
             'name' => 'admin',
             'email' => 'admin@gmail.com',
             'password' => bcrypt('admin123'),
         ]);
+
+        // Assign roles (admin/trabajador)
+        $this->call(RolesSeeder::class);
 
 
         //genera pedidos con productos

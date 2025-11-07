@@ -26,8 +26,8 @@ class OrderFactory extends Factory
             //'total' => $this->faker->randomFloat(2, 10, 1000), // Total del pedido
             'created_at'=> now(),
             'updated_at' => now(),
-            'estado_pago' => $this->faker->randomElement(['pagado', 'por pagar']),
-            'estado_produccion' => $this->faker->randomElement(['preparacion', 'enviado', 'entregado', 'cancelado']),
+            'estado_pago' => $this->faker->randomElement(['pendiente']),
+            'estado_produccion' => $this->faker->randomElement(['preparacion', 'enviado']),
         ];
     }
 

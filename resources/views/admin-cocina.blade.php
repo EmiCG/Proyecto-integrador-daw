@@ -1,11 +1,14 @@
 <x-app-layout>
     <x-slot name='layoutTitle'>
-        Pedidos
+        Cocina
     </x-slot>
 
     <x-slot name='slot'>
         <div class="container mx-auto mt-5">
-            <h1 class="text-2xl font-bold mb-4">Pedidos</h1>
+            <div class="mb-4 flex items-center justify-between">
+                <h1 class="text-2xl font-bold">Cocina</h1>
+                <a href="{{ route('admin.dashboard') }}" class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-3 py-1 rounded">Volver al panel</a>
+            </div>
 
             <div class="mb-4 flex items-center space-x-2">
                 @php $current = $filter ?? 'pending'; @endphp

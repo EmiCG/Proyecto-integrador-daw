@@ -38,10 +38,49 @@ class Order extends Model
     }
 
     public function calcularTotal(): float{
-
         return $this->productos->sum(function ($producto) {
             return $producto->pivot->cantidad * $producto->pivot->precio_unitario;
         });
+    }
+
+    // Subtotal (sum of items)
+    public function subtotal(): float
+    {
+        return $this->calcularTotal();
+    }
+
+    // Shipping price: if shipping column set use it, otherwise 0.00
+    public function shipping(): float
+    {
+        return (float) ($this->shipping ?? 0.0);
+    }
+
+    // Total: prefer stored total if present, otherwise subtotal + shipping
+    public function totalAmount(): float
+    {
+        if ($this->total !== null) {
+            return (float) $this->total;
+        }
+
+        return $this->subtotal() + $this->shipping();
+    }
+
+    // Compute change for given cash received. Does not persist.
+    public function computeChange(float $efectivoRecibido): float
+    {
+        $change = $efectivoRecibido - $this->totalAmount();
+        return $change >= 0 ? round($change, 2) : 0.0;
+    }
+
+    // Record payment and save efectivo_recibido and cambio_entregado and mark pago
+    public function recordPayment(float $efectivoRecibido): void
+    {
+        $change = $this->computeChange($efectivoRecibido);
+
+        $this->efectivo_recibido = $efectivoRecibido;
+        $this->cambio_entregado = $change;
+        $this->estado_pago = 'pagado';
+        $this->save();
     }
 
     protected function casts(): array

@@ -4,38 +4,43 @@
     </x-slot>
 
     <x-slot name='slot'>
-
-        <div class="absolute top-4 right-4">
-            <a href="/laravel/test1/public/admin/productos/create" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-               Crear producto
-            </a>
-        </div>
-
-        @foreach ($productos as $producto)
-
-            <div class="flex flex-col items-center justify-center bg-gray-100 p-4 rounded-lg shadow-md m-4">
-                <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-                    <h1 class="text-2xl font-bold text-gray-800" name='nombre'>{{$producto->nombre}}</h1>
-                    <h2 class="text-lg font-semibold text-green-600 mt-2" name='precio'>{{$producto->precio}}</h2>
-                    <p class="text-gray-600 mt-2" name='descripcion'>{{$producto->descripcion}}</p>
-                    <h2 class="text-xl font-medium text-gray-700 mt-4">Imagen</h2><br><br>
-                    <a href="/laravel/test1/public/admin/productos/edit/{{$producto->id}}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-10">
-                        Editar producto
-                    </a>
-                    
-                    <form action="/laravel/test1/public/admin/productos/delete/{{$producto->id}}" method="POST">
-                        @csrf
-                        @method('DELETE')
-                        
-                        <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-10">
-                        Eliminar producto
-                        </button>
-                    </form>
-                </div>
+        <div class="container mx-auto mt-8">
+            <div class="flex items-center justify-between mb-6">
+                <h1 class="text-2xl font-bold">Productos / Menú</h1>
+                @if(auth()->user() && auth()->user()->isAdmin())
+                    <a href="{{ route('admin-create-view.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Crear producto</a>
+                @endif
             </div>
-                
-        @endforeach
 
+            @if(session('status'))
+                <div class="mb-4 p-3 bg-green-50 border border-green-100 text-green-800 rounded">{{ session('status') }}</div>
+            @endif
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                @forelse ($productos as $producto)
+                    <div class="bg-white rounded-lg shadow hover:shadow-md overflow-hidden">
+                        <div class="p-4">
+                            <h2 class="text-lg font-semibold text-gray-800">{{ $producto->nombre }}</h2>
+                            <p class="text-sm text-gray-500 mt-1">{{ $producto->descripcion }}</p>
+                        </div>
+                        <div class="px-4 pb-4 flex items-center justify-between">
+                            <div class="text-green-600 font-medium">${{ number_format($producto->precio, 2) }}</div>
+                            <div class="flex items-center space-x-2">
+                                <a href="{{ route('admin-view.show', ['id' => $producto->id]) }}" class="text-sm bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded">Editar</a>
+
+                                <form action="{{ route('admin.destroy', ['id' => $producto->id]) }}" method="POST" onsubmit="return confirm('¿Eliminar este producto?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-sm bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded">Eliminar</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                @empty
+                    <div class="col-span-full text-center text-gray-600">No hay productos. @if(auth()->user() && auth()->user()->isAdmin()) <a href="{{ route('admin-create-view.create') }}" class="text-blue-600 underline">Crear uno</a>@endif</div>
+                @endforelse
+            </div>
+        </div>
     </x-slot>
 
 </x-app-layout>

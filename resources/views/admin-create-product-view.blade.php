@@ -3,13 +3,13 @@
 
     <x-slot name='slot'>
         <div class="container mx-auto mt-5">
-            <form action="/laravel/test1/public/admin/productos/create" method="POST" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+            <form action="{{ route('admin.store') }}" method="POST" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
                 @csrf
 
                 <div class="mb-4">
                     <label>
                         Nombre:
-                        <input type="text" name="nombre_producto" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                        <input type="text" name="nombre" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
                     </label>
                 </div>
                     
